@@ -12,6 +12,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
+			],
+			contacts: [
+				{
+					name: "FIRST CONTACT",
+					phone: "34"
+				},
+				{
+					name: "SECOND CONTACT",
+					phone: "12"
+				}
 			]
 		},
 		actions: {
