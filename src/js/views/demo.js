@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { Context } from "../store/appContext";
@@ -6,63 +6,93 @@ import { Context } from "../store/appContext";
 import "../../styles/demo.css";
 
 export const Demo = () => {
-	const { store, actions } = useContext(Context);
+    const { actions } = useContext(Context);
 
-	function deleteContact() {
-		console.log('Se va a eliminar contacto')
-	}
-	
-	return (
-		<div className="container">
-			<ul className="list-group">
-				{store.demo.map((item, index) => {
-				
-					return (
-						<li
-							key={index}
-							className="list-group-item d-flex justify-content-between"
-							style={{ background: item.background }}>
-							<Link to={"/single/" + index}>
-								<span>Link to: {item.title}</span>
-							</Link>
-							{// Conditional render example
-							// Check to see if the background is orange, if so, display the message
-							item.background === "orange" ? (
-								<p style={{ color: item.initial }}>
-									Check store/flux.js scroll to the actions to see the code
-								</p>
-							) : null}
-							<button className="btn btn-success" onClick={() => actions.changeColor(index, "orange")}>
-								Change Color
-							</button>
-						</li>
-					);
-				})}
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        address: ''
+    });
 
-				{store.contacts.map((item, index) => {
-					return (
-						<li
-							key={index}
-							className="list-group-item d-flex justify-content-between"
-							>
-								<div>
-									<p>
-										{item.name}
-									</p>
-									
-									<p>
-										{item.phone}
-									</p>
-								</div>
-								<button onClick={deleteContact}>Eliminar contacto</button>
-						</li>
-					);
-				})}
-			</ul>
-			<br />
-			<Link to="/">
-				<button className="btn btn-primary">Back home</button>
-			</Link>
-		</div>
-	);
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Envía los datos al backend
+        actions.agregarContacto(formData);
+        // Limpia el formulario después de enviar
+        setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            address: ''
+        });
+    };
+
+    return (
+        <div className="container">
+            <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                    <label htmlFor="name" className="form-label">Full Name</label>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        id="name" 
+                        name="name" 
+                        placeholder="Full Name" 
+                        value={formData.name} 
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="email" className="form-label">Email</label>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        id="email" 
+                        name="email" 
+                        placeholder="Enter email" 
+                        value={formData.email} 
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="phone" className="form-label">Phone</label>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        id="phone" 
+                        name="phone" 
+                        placeholder="Enter phone" 
+                        value={formData.phone} 
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="address" className="form-label">Address</label>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        id="address" 
+                        name="address" 
+                        placeholder="Enter address" 
+                        value={formData.address} 
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <button className="btn btn-primary">Save</button>
+            </form>
+            <br />
+            <Link to="/">
+                <button className="btn btn-primary">Back home</button>
+            </Link>
+        </div>
+    );
 };
