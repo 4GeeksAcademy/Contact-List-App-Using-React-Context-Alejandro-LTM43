@@ -13,8 +13,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					name: "SECOND CONTACT",
 					phone: "12"
 				}
-			]
+			],
+
+			editingContact: null  // Añade esto para almacenar el contacto que se está editando
 		},
+		
 		actions: {
 
 			agregarContacto: (newContact) => {
@@ -33,15 +36,38 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch(error => console.error('Error:', error));
 				},
+
+				actualizarContacto: (contactoActualizado, id) => {
+					const store = getStore();
+					const requestOptions = {
+						method: 'PUT',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(contactoActualizado)
+					};
+				
+					fetch(`https://playground.4geeks.com/contact/agendas/AlejandroArraga/contacts/${id}`, requestOptions)
+						.then(response => response.json())
+						.then(data => {
+							const updatedContacts = store.contacts.map(contact => 
+								contact.id === id ? { ...contact, ...data } : contact
+							);
+							setStore({ contacts: updatedContacts });
+						})
+						.catch(error => console.error('Error:', error));
+				},
+
+				editarContacto: (contacto) => {
+					setStore({ editingContact: contacto }); // Simplemente guarda el contacto a editar en el estado
+				},
 			
-			eliminarContacto: (indexToDelete) => {
-				console.log('Se va a eliminar el contacto desde flux' + indexToDelete)
+			eliminarContacto: (id) => {
+				console.log('Se va a eliminar el contacto desde flux' + id)
 				const requestOptions = {
 					method: "DELETE",
 					redirect: "follow"
 				  };
 				  
-				  fetch("https://playground.4geeks.com/contact/agendas/AlejandroArraga/contacts/" + indexToDelete, requestOptions)
+				  fetch("https://playground.4geeks.com/contact/agendas/AlejandroArraga/contacts/" + id, requestOptions)
 					.then((response) => response.text())
 					.then((result) => {
 						console.log((result))
@@ -49,6 +75,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						.then( (response) => response.json() )
 						.then( (data) => setStore({ contacts: data.contacts }) )
 					})
+					.catch(error => console.error('Error:', error));
 			},
 
 			

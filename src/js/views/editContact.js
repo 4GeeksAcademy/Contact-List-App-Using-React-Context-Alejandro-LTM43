@@ -1,19 +1,22 @@
-import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
-
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
+import { Link, useNavigate } from "react-router-dom";
 
-import "../../styles/demo.css";
-
-export const Demo = () => {
-    const { actions } = useContext(Context);
-
+export const EditContact = () => {
+    const { store, actions } = useContext(Context);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: '',
         address: ''
     });
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (store.editingContact) {
+            setFormData(store.editingContact);
+        }
+    }, [store.editingContact]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -25,22 +28,13 @@ export const Demo = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Envía los datos al backend
-        actions.agregarContacto(formData);
-        // Limpia el formulario después de enviar
-        setFormData({
-            name: '',
-            email: '',
-            phone: '',
-            address: ''
-        });
+        actions.actualizarContacto(formData, store.editingContact.id);
+        navigate('/');
     };
 
     return (
         <div className="container">
-            <div className="d-flex justify-content-center">
-                <h1>Add new contact</h1>
-            </div>
+            <h1 className="text-center">Add new contact</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Full Name</label>
@@ -49,7 +43,6 @@ export const Demo = () => {
                         className="form-control" 
                         id="name" 
                         name="name" 
-                        placeholder="Full Name" 
                         value={formData.name} 
                         onChange={handleInputChange}
                     />
@@ -57,11 +50,10 @@ export const Demo = () => {
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email</label>
                     <input 
-                        type="text" 
+                        type="email" 
                         className="form-control" 
                         id="email" 
                         name="email" 
-                        placeholder="Enter email" 
                         value={formData.email} 
                         onChange={handleInputChange}
                     />
@@ -73,7 +65,6 @@ export const Demo = () => {
                         className="form-control" 
                         id="phone" 
                         name="phone" 
-                        placeholder="Enter phone" 
                         value={formData.phone} 
                         onChange={handleInputChange}
                     />
@@ -85,18 +76,17 @@ export const Demo = () => {
                         className="form-control" 
                         id="address" 
                         name="address" 
-                        placeholder="Enter address" 
                         value={formData.address} 
                         onChange={handleInputChange}
                     />
                 </div>
-                <button className="btn btn-primary col-12">Save</button>
+                <button type="submit" className="btn btn-primary col-12">Save</button>
             </form>
-            <br />
-            <Link to="/" 
-                        className="back-contacts-link"
-                    >
-                        or get back to contacts
+            <Link 
+                to="/" 
+                className="back-contacts-link"
+            >
+                or get back to contacts
             </Link>
         </div>
     );

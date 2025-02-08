@@ -1,0 +1,9 @@
+.back-contacts-link {
+    text-decoration: none; /* Esto quita el subrayado por defecto */
+    color: #0556ec; /* O el color que prefieras */
+    transition: text-decoration 0.3s ease;
+}
+
+.back-contacts-link:hover {
+    text-decoration: underline; /* Esto añade el subrayado solo al pasar el cursor */
+}

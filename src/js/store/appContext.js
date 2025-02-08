@@ -21,6 +21,8 @@ const injectContext = PassedComponent => {
 			})
 		);
 
+		
+
 		useEffect(() => {
 			/**
 			 * EDIT THIS!
